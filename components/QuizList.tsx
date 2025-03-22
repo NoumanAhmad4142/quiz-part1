@@ -1,3 +1,9 @@
+/**
+ * QuizList Component
+ * Displays a list of quizzes (either draft or published) with options to view, edit, and delete them.
+ * Includes loading states, error handling, and empty state handling.
+ */
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -5,20 +11,27 @@ import { useRouter } from "next/navigation";
 import { FiEdit3, FiTrash2, FiEye, FiClock, FiBook } from "react-icons/fi";
 import { Quiz, fetchQuizzes, deleteQuiz } from "@/app/utils/api";
 
+// Props interface defining the component's props
 interface QuizListProps {
-  status: "draft" | "published";
+  status: "draft" | "published"; // Determines whether to show draft or published quizzes
 }
 
 const QuizList: React.FC<QuizListProps> = ({ status }) => {
   const router = useRouter();
+  // State management for quizzes, loading state, and error handling
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch quizzes when component mounts or status changes
   useEffect(() => {
     loadQuizzes();
   }, [status]);
 
+  /**
+   * Loads quizzes from the API based on the current status
+   * Updates the quizzes state and handles loading/error states
+   */
   const loadQuizzes = async () => {
     try {
       const data = await fetchQuizzes(status);
@@ -30,6 +43,10 @@ const QuizList: React.FC<QuizListProps> = ({ status }) => {
     }
   };
 
+  /**
+   * Handles quiz deletion with confirmation
+   * @param id - The ID of the quiz to delete
+   */
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this quiz?")) {
       return;
@@ -43,14 +60,23 @@ const QuizList: React.FC<QuizListProps> = ({ status }) => {
     }
   };
 
+  /**
+   * Navigates to the quiz edit page
+   * @param id - The ID of the quiz to edit
+   */
   const handleEdit = (id: string) => {
     router.push(`/create-new-quiz?id=${id}`);
   };
 
+  /**
+   * Navigates to the quiz view page
+   * @param id - The ID of the quiz to view
+   */
   const handleView = (id: string) => {
     router.push(`/quiz/${id}`);
   };
 
+  // Loading state UI
   if (loading) {
     return (
       <div className="min-h-screen p-8 flex items-center justify-center">
@@ -62,6 +88,7 @@ const QuizList: React.FC<QuizListProps> = ({ status }) => {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Header section with title and create button */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-800">
             {status === "draft" ? "Draft Quizzes" : "Published Quizzes"}
@@ -74,12 +101,14 @@ const QuizList: React.FC<QuizListProps> = ({ status }) => {
           </button>
         </div>
 
+        {/* Error message display */}
         {error && (
           <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
             {error}
           </div>
         )}
 
+        {/* Empty state handling */}
         {quizzes.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-600">No {status} quizzes found.</p>
@@ -91,13 +120,16 @@ const QuizList: React.FC<QuizListProps> = ({ status }) => {
             </button>
           </div>
         ) : (
+          // Grid layout for quiz cards
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {quizzes.map((quiz) => (
+              // Individual quiz card
               <div
                 key={quiz._id}
                 className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
               >
                 <div className="p-6">
+                  {/* Quiz title and status badge */}
                   <div className="flex items-start justify-between mb-4">
                     <h2 className="text-xl font-semibold text-gray-800">
                       {quiz.title}
@@ -113,10 +145,12 @@ const QuizList: React.FC<QuizListProps> = ({ status }) => {
                     </span>
                   </div>
 
+                  {/* Quiz description */}
                   <p className="text-gray-600 mb-4 line-clamp-2">
                     {quiz.description}
                   </p>
 
+                  {/* Quiz metadata */}
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center text-gray-600">
                       <FiBook className="w-4 h-4 mr-2" />
@@ -134,6 +168,7 @@ const QuizList: React.FC<QuizListProps> = ({ status }) => {
                     </div>
                   </div>
 
+                  {/* Action buttons and creation date */}
                   <div className="flex items-center justify-between pt-4 border-t">
                     <div className="flex space-x-2">
                       <button

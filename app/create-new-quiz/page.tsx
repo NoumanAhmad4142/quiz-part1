@@ -59,7 +59,7 @@ const CreateNewQuiz = () => {
         setLoading(false);
         return;
       }
-
+      //michael
       try {
         const quiz = await fetchQuizById(quizId);
 
@@ -93,7 +93,7 @@ const CreateNewQuiz = () => {
 
     loadQuiz();
   }, [quizId]);
-
+  ///////
   // Function to add a new question to the quiz
   const addQuestion = () => {
     const newQuestion: Question = {
@@ -180,6 +180,7 @@ const CreateNewQuiz = () => {
   };
 
   // Function to handle form submission (both draft and publish)
+  //michael
   const handleSubmit = async (e: React.FormEvent, isDraft: boolean) => {
     e.preventDefault();
     setLoading(true);
@@ -251,6 +252,7 @@ const CreateNewQuiz = () => {
       );
 
       // Redirect to appropriate page based on quiz status
+      //if else
       router.push(isDraft ? "/draft-quizzes" : "/published-quizzes");
     } catch (err) {
       console.error("Error saving quiz:", err);
@@ -259,7 +261,7 @@ const CreateNewQuiz = () => {
       setLoading(false);
     }
   };
-
+  ///////micheal end
   if (loading) {
     return (
       <div className="min-h-screen p-8 flex items-center justify-center">
