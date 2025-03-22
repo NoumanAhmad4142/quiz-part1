@@ -23,6 +23,7 @@ interface QuizData {
   dueDate: string;
   questions: Question[];
   status?: "draft" | "published";
+  totalMarks?: number;
 }
 
 interface QuestionResponse extends Question {
@@ -87,21 +88,27 @@ export async function POST(req: Request) {
     }
 
     // Format the data with proper types
+    const formattedQuestions = body.questions.map((q: Question) => ({
+      question: q.question,
+      options: q.options.map((opt: QuestionOption) => ({
+        text: opt.text,
+        isCorrect: opt.isCorrect,
+      })),
+      marks: Number(q.marks) || 1,
+      timeLimit: Number(q.timeLimit) || 5,
+    }));
+
+    // Calculate total marks
+    const totalMarks = formattedQuestions.reduce((sum, q) => sum + q.marks, 0);
+
     const quizData = {
       title: body.title,
       description: body.description,
       subject: body.subject,
       classId: body.classId,
       dueDate: parsedDueDate,
-      questions: body.questions.map((q: Question) => ({
-        question: q.question,
-        options: q.options.map((opt: QuestionOption) => ({
-          text: opt.text,
-          isCorrect: opt.isCorrect,
-        })),
-        marks: Number(q.marks) || 1,
-        timeLimit: Number(q.timeLimit) || 5,
-      })),
+      questions: formattedQuestions,
+      totalMarks,
       status: body.status || "draft",
       createdBy: new mongoose.Types.ObjectId("507f1f77bcf86cd799439011"), // Default user ID
     };

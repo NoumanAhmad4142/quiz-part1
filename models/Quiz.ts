@@ -24,6 +24,11 @@ const QuizSchema = new mongoose.Schema({
       return new Date(v);
     },
   },
+  totalMarks: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   questions: [
     {
       question: {
@@ -95,6 +100,11 @@ QuizSchema.set("toJSON", {
           timeLimit: Number(q.timeLimit),
         })
       );
+    }
+
+    // Ensure totalMarks is a number
+    if (ret.totalMarks) {
+      ret.totalMarks = Number(ret.totalMarks);
     }
 
     return ret;

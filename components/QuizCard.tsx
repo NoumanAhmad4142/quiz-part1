@@ -10,6 +10,7 @@ interface QuizCardProps {
     subject: string;
     classId: string;
     dueDate: string;
+    totalMarks: number;
     questions: Array<{
       question: string;
       options: Array<{ text: string; isCorrect: boolean }>;
@@ -42,43 +43,40 @@ export default function QuizCard({ quiz, onDelete }: QuizCardProps) {
   return (
     <div onClick={(e) => e.stopPropagation()}>
       <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md">
-        <h3 className="text-xl font-bold mb-4">{quiz.title}</h3>
-        <p className="text-gray-600 mb-4">{quiz.description}</p>
-        <div className="space-y-2 mb-4">
-          <p className="text-sm text-gray-500">
-            <span className="font-semibold">Subject:</span> {quiz.subject}
-          </p>
-          <p className="text-sm text-gray-500">
-            <span className="font-semibold">Class:</span> {quiz.classId}
-          </p>
-          <p className="text-sm text-gray-500">
-            <span className="font-semibold">Due Date:</span>{" "}
-            {new Date(quiz.dueDate).toLocaleDateString()}
-          </p>
-          <p className="text-sm text-gray-500">
-            <span className="font-semibold">Questions:</span>{" "}
-            {quiz.questions.length}
-          </p>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-semibold text-gray-900">{quiz.title}</h3>
+          <span className="px-2 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
+            {quiz.status}
+          </span>
         </div>
-        <div className="flex justify-end space-x-2">
-          <button
-            onClick={handleView}
-            className="p-2 text-blue-600 hover:text-blue-800 rounded-full hover:bg-blue-50"
-          >
-            <Eye className="h-5 w-5" />
-          </button>
-          <button
-            onClick={handleEdit}
-            className="p-2 text-yellow-600 hover:text-yellow-800 rounded-full hover:bg-yellow-50"
-          >
-            <Pencil className="h-5 w-5" />
-          </button>
-          <button
-            onClick={handleDelete}
-            className="p-2 text-red-600 hover:text-red-800 rounded-full hover:bg-red-50"
-          >
-            <Trash2 className="h-5 w-5" />
-          </button>
+        <p className="text-gray-600 mb-4">{quiz.description}</p>
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <div className="flex items-center space-x-4">
+            <span>Subject: {quiz.subject}</span>
+            <span>Class: {quiz.classId}</span>
+            <span>Due: {new Date(quiz.dueDate).toLocaleDateString()}</span>
+            <span>Total Marks: {quiz.totalMarks}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleView}
+              className="p-1 text-gray-600 hover:text-blue-600"
+            >
+              <Eye className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleEdit}
+              className="p-1 text-gray-600 hover:text-blue-600"
+            >
+              <Pencil className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-1 text-gray-600 hover:text-red-600"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
 
